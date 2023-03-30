@@ -1,0 +1,16 @@
+body {
+    background-color: #2B3467;
+    font-family: 'Ubuntu', sans-serif;
+    color: #FCFFE7;
+}
+
+#url_link:hover {
+    text-decoration: underline;
+}
+
+#url_link {
+    text-decoration: none;
+    color: #EB455F
+}
+
+

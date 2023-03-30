@@ -1,0 +1,32 @@
+<%- include("partials/header"); -%>
+
+    <div style="margin-bottom: 2rem;">
+        <h4 style="text-align: center; margin: 1rem; color: #FCFFE7;" id="date"></h4>
+    </div>
+    <div class="container">
+        <h3 class="text-center" style="color: red; margin-bottom: 2.5rem;">Latest news about <%= q %>
+        </h3>
+        <% data.forEach(function(item){ %>
+            <div class="card text-white bg-dark mb-3 h-100 mx-auto" style="max-width: 25rem;">
+                <div class="card-body">
+                    <img style="margin-bottom: 1rem;" class="card-img" src="<%= item.image %>" alt="Card image">
+                    <h5 style="font-weight: bolder; color: #FCFFE7;" class="card-title">
+                        <%= item.title %>
+                    </h5>
+                    <p class="card-text">
+                        <%= item.description %>
+                    </p>
+                    <p style="font-weight: bold; color: #EB455F;" class="card-text"><a>Published by&nbsp;</a>
+                        <a class="hover" id="url_link" style="color: #EB455F;" href="<%= item.source.url %>">
+                            <%= item.source.name %>
+                        </a>
+                    </p>
+                    <p class="card-text text-center"><a style="text-decoration: none;" href="<%= item.url %>">Read Full
+                            Story</a></p>
+                </div>
+            </div>
+            <% }) %>
+    </div>
+
+
+<%- include("partials/footer"); -%>

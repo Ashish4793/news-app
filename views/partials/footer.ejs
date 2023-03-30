@@ -1,0 +1,15 @@
+<script>
+    const weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const d = new Date();
+    let day = weekday[d.getDay()];
+    const today = new Date();
+    const month = today.toLocaleString('default', { month: 'long' });
+    let dd = today.getDate();
+    const dat = dd.toString();
+
+    document.getElementById("date").innerHTML = day + "," + dat + " " + month;
+</script>
+
+</body>
+
+</html>

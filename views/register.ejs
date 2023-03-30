@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N"
+        crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/3ea55f06b5.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <title>Register</title>
+</head>
+<body>
+    <section class="vh-100">
+        <div class="container-fluid h-custom">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-9 col-lg-6 col-xl-5">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                        class="img-fluid" alt="Sample image">
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                    <form action="/register" method="post">
+                        <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                            <p class="lead fw-normal mb-0 me-3">Sign in with</p>
+                            <a href="https://www.facebook.com/">
+                                <button type="button" class="btn btn-floating mx-1">
+                                    <i class="fa-brands fa-facebook fa-2xl" style="color: #005eff;"></i>
+                                </button>
+                            </a>
+
+                            <a href="https://www.twitter.com/">
+                                <button type="button" class="btn btn-floating mx-1">
+                                    <i class="fa-brands fa-twitter fa-2xl" style="color: #005cfa;"></i>
+                                </button>
+                            </a>
+
+                            <a href="https://www.google.com/">
+                                <button type="button" class="btn btn-floating mx-1">
+                                    <i class="fa-brands fa-google-plus fa-2xl" style="color: #d10000;"></i>
+                                </button>
+                            </a>
+                        </div>
+
+                        <div class="divider d-flex align-items-center my-4">
+                            <p class="text-center fw-bold mx-3 mb-0">Or</p>
+                        </div>
+
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <input name="username" autocomplete="off" type="email" required id="form3Example3" class="form-control form-control-lg"
+                                placeholder="Enter a valid email address" />
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            <input name="name" autocomplete="off" type="text" required id="form3Example3" class="form-control form-control-lg"
+                                placeholder="Enter your full name" />
+                        </div>
+
+
+                        <div class="form-outline mb-4">
+                            <select name="country" class="form-select" aria-label="Default select example">
+                                <option selected="selected" disabled="disabled" value="">Select your country</option>
+                                <option value="in">Canada</option>
+                                <option value="cn">China</option>
+                                <option value="de">Germany</option>
+                                <option value="in">India</option>
+                                <option value="gb">United Kingdom</option>
+                                <option value="us">United States</option>
+                            </select>
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            <select name="langauge" class="form-select" aria-label="Default select example">
+                                <option selected="selected" disabled="disabled" value="">Select your preferred language</option>
+                                <option value="zh">Chinese</option>
+                                <option value="en">English</option>
+                                <option value="de">German</option>
+                                <option value="hi">Hindi</option>
+                                <option value="mr">Marathi</option>
+                                <option value="ml">Malayalam</option>
+                                <option value="ta">Tamil</option>
+                                <option value="te">Telegu</option>
+                            </select>
+                        </div>
+
+                        
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-4">
+                            <input name="password" autocomplete="off" type="password" id="form3Example4" class="form-control form-control-lg"
+                                placeholder="Create a strong password" />
+                        </div>
+
+
+                        <div style="margin-bottom: 5rem;" class="text-center text-lg-start mt-4 pt-2">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button type="submit" class="btn btn-primary btn-lg"
+                                style="padding-left: 2.5rem; padding-right: 2.5rem;">Register</button>
+                            </div>
+                            <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="/login"
+                                    class="link-danger">Login</a></p>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+
+</body>
+</html>
+
+
+
+
+
+
