@@ -17,3 +17,9 @@ height: calc(100% - 73px);
 height: 100%;
 }
 }
+
+@media screen and (max-width: 992px) {
+    .lgbtn{
+        margin-right: 128px;
+    }
+}
