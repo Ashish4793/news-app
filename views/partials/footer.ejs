@@ -8,6 +8,20 @@
     const dat = dd.toString();
 
     document.getElementById("date").innerHTML = day + "," + dat + " " + month;
+
+    var login = <%= loggedIn %>;
+    if (login === true){
+        function bookmarkAlert() {
+        Swal.fire(
+            'Bookmarked!',
+            '',
+            'success'
+        )
+    }
+    } else {
+        //do nothing
+    }
+    
 </script>
 
 </body>

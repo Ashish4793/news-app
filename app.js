@@ -55,58 +55,64 @@ const connectDB = async () => {
 
 const userSchema = new mongoose.Schema({
     username: { type: String, unique: true, require: true },
-    thirdpartyauth_id: { type: String, unique: true, require: true },
+    thirdpartyauth_id: { type: String, require: true },
     name: { type: String, require: true },
     country: { type: String, require: true },
     langauge: { type: String, require: true },
     password: String
 });
-
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
+
+const bookmarkSchema = new mongoose.Schema({
+    user_id: String,
+    article_title: String,
+    article_desc: String,
+    article_provider: String,
+    article_img_url: String,
+    article_link: String,
+});
+
+const Bookmark = mongoose.model("Bookmark", bookmarkSchema);
 const User = mongoose.model("User", userSchema);
 var newUser;
 
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://news-app.cyclic.app/auth/google/callback"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOne({ thirdpartyauth_id: profile.id }, function (err, user) {
-        if (user === null) {
-            console.log("yes");
-            newUser = true;
-        } else {
-            console.log("no");
-            newUser = false;
-        }
-    });
-    User.findOrCreate({ thirdpartyauth_id: profile.id  , name : profile.displayName}, function (err, user) {
-      return cb(err, user);
-    });
-  }
+    callbackURL: process.env.GOOGLE_CALLBACK_URL
+},
+    function (accessToken, refreshToken, profile, cb) {
+        User.findOne({ thirdpartyauth_id: profile.id }, function (err, user) {
+            if (user === null) {
+                newUser = true;
+            } else {
+                newUser = false;
+            }
+        });
+        User.findOrCreate({ thirdpartyauth_id: profile.id, name: profile.displayName }, function (err, user) {
+            return cb(err, user);
+        });
+    }
 ));
 
 passport.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_APP_ID,
     clientSecret: process.env.FACEBOOK_APP_SECRET,
-    callbackURL: "https://news-app.cyclic.app/auth/facebook/callback"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOne({ thirdpartyauth_id: profile.id }, function (err, user) {
-        if (user === null) {
-            console.log("yes");
-            newUser = true;
-        } else {
-            console.log("no");
-            newUser = false;
-        }
-    });
-    User.findOrCreate({ thirdpartyauth_id: profile.id , name : profile.displayName }, function (err, user) {
-      return cb(err, user);
-    });
-  }
+    callbackURL: process.env.FACEBOOK_CALLBACK_URL
+},
+    function (accessToken, refreshToken, profile, cb) {
+        User.findOne({ thirdpartyauth_id: profile.id }, function (err, user) {
+            if (user === null) {
+                newUser = true;
+            } else {
+                newUser = false;
+            }
+        });
+        User.findOrCreate({ thirdpartyauth_id: profile.id, name: profile.displayName }, function (err, user) {
+            return cb(err, user);
+        });
+    }
 ));
 
 
@@ -117,40 +123,39 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.get('/auth/facebook',
-  passport.authenticate('facebook'));
+    passport.authenticate('facebook'));
 
 app.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res) {
-    if (newUser === true){
-        res.render("onboarding");
-    } else {
-        res.redirect('/');
-    }
-});
+    passport.authenticate('facebook', { failureRedirect: '/login' }),
+    function (req, res) {
+        if (newUser === true) {
+            res.render("onboarding");
+        } else {
+            res.redirect('/');
+        }
+    });
 
 
 app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile'] }));
+    passport.authenticate('google', { scope: ['profile'] }));
 
-app.get('/auth/google/callback', 
-  passport.authenticate('google', { failureRedirect: '/register' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    if (newUser === true){
-        res.render("onboarding");
-    } else {
-        res.redirect('/');
-    }
-    
-});
+app.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/register' }),
+    function (req, res) {
+        // Successful authentication, redirect home.
+        if (newUser === true) {
+            res.render("onboarding");
+        } else {
+            res.redirect('/');
+        }
+
+    });
 
 app.post("/onboarding", function (req, res) {
-    if (req.isAuthenticated()){
-        console.log(req.user);
+    if (req.isAuthenticated()) {
         User.findOneAndUpdate({ thirdpartyauth_id: req.user.thirdpartyauth_id }, { country: req.body.country, langauge: req.body.langauge }, function (err) {
             if (!err) {
-                res.redirect("/");
+                res.render("alerts/preupdate");
             } else {
                 console.log(err);
             }
@@ -161,8 +166,6 @@ app.post("/onboarding", function (req, res) {
 });
 
 app.get("/login", function (req, res) {
-    console.log(process.env.FACEBOOK_APP_ID);
-    console.log(process.env.FACEBOOK_APP_SECRET);
     res.render("login");
 });
 
@@ -201,8 +204,9 @@ app.get("/register", function (req, res) {
 });
 
 app.post("/register", function (req, res) {
-    User.register({ username: req.body.username, name: req.body.name, country: req.body.country, langauge: req.body.langauge }, req.body.password, function (err, user) {
+    User.register({ username: req.body.username, name: req.body.name, thirdpartyauth_id: null, country: req.body.country, langauge: req.body.langauge }, req.body.password, function (err, user) {
         if (err) {
+            console.log(err)
             res.render("alerts/uaxerror")
         } else {
             passport.authenticate("local")(req, res, function () {
@@ -214,13 +218,71 @@ app.post("/register", function (req, res) {
 
 app.get("/account", function (req, res) {
     if (req.isAuthenticated()) {
-        if (req.user.thirdpartyauth_id != null) {
-            res.render("account", { user: req.user });
-        } else {
-            console.log("third party");
-        }
+        res.render("account", { user: req.user });
     } else {
         res.redirect("/login")
+    }
+});
+
+app.get("/bookmarks", function (req, res) {
+    if (req.isAuthenticated()) {
+        var loggedIn = true;
+        Bookmark.find({ user_id: req.user.username }, function (err, foundData) {
+            if (!err) {
+                if (!foundData.length) {
+                    b = false;
+                } else {
+                    b = true;
+                }
+                res.render("bookmarks", { data: foundData, loggedIn: loggedIn, b: b });
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        res.redirect("/login");
+    }
+});
+
+app.post("/bookmark", function (req, res) {
+    if (req.isAuthenticated()) {
+        const id = req.user.username;
+        Bookmark.findOne({ user_id: id, article_title: req.body.title }, function (err, condition) {
+            if (condition === null) {
+                const newItem = new Bookmark({
+                    user_id: id,
+                    article_title: req.body.title,
+                    article_desc: req.body.description,
+                    article_provider: req.body.source_name,
+                    article_img_url: req.body.img_url,
+                    article_link: req.body.story_link
+                });
+                newItem.save(function (err) {
+                    if (!err) {
+                    } else {
+                        console.log(err);
+                    }
+                });
+            } else {
+                //do nothing
+            }
+        });
+    } else {
+        res.redirect("/login");
+    }
+});
+
+app.post("/deletebookmark", function (req, res) {
+    if (req.isAuthenticated()) {
+        Bookmark.findOneAndDelete({ _id: req.body.id }, function (err) {
+            if (!err) {
+                res.redirect("/bookmarks");
+            } else {
+                console.log(err);
+            }
+        });
+    } else {
+        res.redirect("/login");
     }
 });
 
@@ -229,20 +291,10 @@ app.get("/", function (req, res) {
     var userCountry;
     var userLangauge;
     if (req.isAuthenticated()) {
-        if (req.user.provider === "twitter") {
-            console.log("twitter");
-            User.findOne({ thirdpartyauth_id: req.user.id }, function (err, user) {
-                loggedIn = true;
-                userCountry = user.country;
-                userLangauge = user.langauge;
-                callHandlerAPI(userCountry, userLangauge);
-            });
-        } else {
-            loggedIn = true;
-            userCountry = req.user.country;
-            userLangauge = req.user.langauge;
-            callHandlerAPI(userCountry, userLangauge);
-        }
+        loggedIn = true;
+        userCountry = req.user.country;
+        userLangauge = req.user.langauge;
+        callHandlerAPI(userCountry, userLangauge);
     } else {
         loggedIn = false;
         userCountry = "in";
@@ -261,7 +313,6 @@ app.get("/", function (req, res) {
                 res.render("home", { data: results, loggedIn: loggedIn });
             });
     }
-
 
 });
 
@@ -319,9 +370,9 @@ app.post("/handler", function (req, res) {
 
 app.post("/editprofile", function (req, res) {
     if (req.isAuthenticated()) {
-        User.findOneAndUpdate({ username: req.user.username }, { country: req.body.country, langauge: req.body.langauge }, function (err) {
+        User.findOneAndUpdate({ _id: req.user._id }, { country: req.body.country, langauge: req.body.langauge }, function (err) {
             if (!err) {
-                res.render("alerts/proupsuc")
+                res.render("alerts/preupdate")
             } else {
                 console.log(err);
             }
@@ -333,18 +384,30 @@ app.post("/editprofile", function (req, res) {
 
 app.post("/deleteaccount", function (req, res) {
     if (req.isAuthenticated()) {
-        if (req.user.thirdpartyauth_id === null){
-            User.findOneAndDelete({ username: req.user.username }, function (err) {
+        if (req.user.thirdpartyauth_id === null) {
+            Bookmark.deleteMany({ user_id: req.user.username }, function (err) {
                 if (!err) {
-                    res.render("alerts/accdelsuc");
+                    User.findOneAndDelete({ username: req.user.username }, function (err) {
+                        if (!err) {
+                            res.render("alerts/accdelsuc");
+                        } else {
+                            console.log(err);
+                        }
+                    });
                 } else {
                     console.log(err);
                 }
             });
         } else {
-            User.findOneAndDelete({ thirdpartyauth_id: req.user.thirdpartyauth_id }, function (err) {
+            Bookmark.deleteMany({ user_id: req.user.thirdpartyauth_id }, function (err) {
                 if (!err) {
-                    res.render("alerts/accdelsuc");
+                    User.findOneAndDelete({ thirdpartyauth_id: req.user.thirdpartyauth_id }, function (err) {
+                        if (!err) {
+                            res.render("alerts/accdelsuc");
+                        } else {
+                            console.log(err);
+                        }
+                    });
                 } else {
                     console.log(err);
                 }
