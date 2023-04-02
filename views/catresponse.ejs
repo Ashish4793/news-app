@@ -9,6 +9,12 @@
         <% data.forEach(function(item){ %>
             <div class="card text-white bg-dark mb-3 h-100 mx-auto" style="max-width: 25rem;">
                 <div class="card-body">
+                    <form onsubmit="bookmarkAlert()" action="/bookmark" method="post">
+                        <input name="img_url" type="hidden" value="<%= item.image %>">
+                        <input name="title" type="hidden" value="<%= item.title %>">
+                        <input name="description" type="hidden" value="<%= item.description %>">
+                        <input name="source_name" type="hidden" value="<%= item.source.name %>">
+                        <input name="story_link" type="hidden" value="<%= item.url %>">
                     <img style="margin-bottom: 1rem;" class="card-img" src="<%= item.image %>" alt="Card image">
                     <h5 style="font-weight: bolder; color: #FCFFE7;" class="card-title">
                         <%= item.title %>
@@ -16,6 +22,7 @@
                     <p class="card-text">
                         <%= item.description %>
                     </p>
+                    <button style="float: right;" type="submit" class="btn"><i class="fa-solid fa-bookmark fa-lg" style="color: #EB455F;"></i></button>
                     <p style="font-weight: bold; color: #EB455F;" class="card-text"><a>Published by&nbsp;</a>
                         <a class="hover" id="url_link" style="color: #EB455F;" href="<%= item.source.url %>">
                             <%= item.source.name %>
@@ -23,6 +30,7 @@
                     </p>
                     <p class="card-text text-center"><a style="text-decoration: none;" href="<%= item.url %>">Read Full
                             Story</a></p>
+                    </form>
                 </div>
             </div>
             <% }) %>
