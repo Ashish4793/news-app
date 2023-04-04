@@ -55,7 +55,6 @@ const connectDB = async () => {
 
 const userSchema = new mongoose.Schema({
     username: { type: String, unique: true, require: true },
-    thirdpartyauth_id: { type: String, require: true },
     thirdparty_provider: { type: String, require: true },
     name: { type: String, require: true },
     country: { type: String, require: true },
@@ -85,14 +84,14 @@ passport.use(new GoogleStrategy({
 },
     function (accessToken, refreshToken, profile, cb) {
         console.log(profile);
-        User.findOne({ thirdpartyauth_id: profile.id }, function (err, user) {
+        User.findOne({ username: profile.id }, function (err, user) {
             if (user === null) {
                 newUser = true;
             } else {
                 newUser = false;
             }
         });
-        User.findOrCreate({ thirdpartyauth_id: profile.id, name: profile.displayName , thirdparty_provider : profile.provider }, function (err, user) {
+        User.findOrCreate({ username: profile.id, name: profile.displayName , thirdparty_provider : profile.provider }, function (err, user) {
             return cb(err, user);
         });
     }
@@ -105,14 +104,14 @@ passport.use(new FacebookStrategy({
 },
     function (accessToken, refreshToken, profile, cb) {
         console.log(profile);
-        User.findOne({ thirdpartyauth_id: profile.id }, function (err, user) {
+        User.findOne({ username: profile.id }, function (err, user) {
             if (user === null) {
                 newUser = true;
             } else {
                 newUser = false;
             }
         });
-        User.findOrCreate({ thirdpartyauth_id: profile.id, name: profile.displayName ,thirdparty_provider : profile.provider }, function (err, user) {
+        User.findOrCreate({ username: profile.id, name: profile.displayName ,thirdparty_provider : profile.provider }, function (err, user) {
             return cb(err, user);
         });
     }
@@ -156,7 +155,7 @@ app.get('/auth/google/callback',
 
 app.post("/onboarding", function (req, res) {
     if (req.isAuthenticated()) {
-        User.findOneAndUpdate({ thirdpartyauth_id: req.user.thirdpartyauth_id }, { country: req.body.country, langauge: req.body.langauge }, function (err) {
+        User.findOneAndUpdate({ username: req.user.username }, { country: req.body.country, langauge: req.body.langauge }, function (err) {
             if (!err) {
                 res.render("alerts/preupdate");
             } else {
@@ -207,7 +206,7 @@ app.get("/register", function (req, res) {
 });
 
 app.post("/register", function (req, res) {
-    User.register({ username: req.body.username, name: req.body.name, thirdpartyauth_id: null,thirdparty_provider : null, country: req.body.country, langauge: req.body.langauge }, req.body.password, function (err, user) {
+    User.register({ username: req.body.username, name: req.body.name,thirdparty_provider : null, country: req.body.country, langauge: req.body.langauge }, req.body.password, function (err, user) {
         if (err) {
             console.log(err)
             res.render("alerts/uaxerror")
@@ -387,35 +386,19 @@ app.post("/editprofile", function (req, res) {
 
 app.post("/deleteaccount", function (req, res) {
     if (req.isAuthenticated()) {
-        if (req.user.thirdpartyauth_id === null) {
-            Bookmark.deleteMany({ user_id: req.user.username }, function (err) {
-                if (!err) {
-                    User.findOneAndDelete({ username: req.user.username }, function (err) {
-                        if (!err) {
-                            res.render("alerts/accdelsuc");
-                        } else {
-                            console.log(err);
-                        }
-                    });
-                } else {
-                    console.log(err);
-                }
-            });
-        } else {
-            Bookmark.deleteMany({ user_id: req.user.thirdpartyauth_id }, function (err) {
-                if (!err) {
-                    User.findOneAndDelete({ thirdpartyauth_id: req.user.thirdpartyauth_id }, function (err) {
-                        if (!err) {
-                            res.render("alerts/accdelsuc");
-                        } else {
-                            console.log(err);
-                        }
-                    });
-                } else {
-                    console.log(err);
-                }
-            });
-        }
+        Bookmark.deleteMany({ user_id: req.user.username }, function (err) {
+            if (!err) {
+                User.findOneAndDelete({ _id: req.user._id }, function (err) {
+                    if (!err) {
+                        res.render("alerts/accdelsuc");
+                    } else {
+                        console.log(err);
+                    }
+                });
+            } else {
+                console.log(err);
+            }
+        });
     } else {
         res.redirect("/login")
     }
