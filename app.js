@@ -56,6 +56,7 @@ const connectDB = async () => {
 const userSchema = new mongoose.Schema({
     username: { type: String, unique: true, require: true },
     thirdpartyauth_id: { type: String, require: true },
+    thirdparty_provider: { type: String, require: true },
     name: { type: String, require: true },
     country: { type: String, require: true },
     langauge: { type: String, require: true },
@@ -90,7 +91,7 @@ passport.use(new GoogleStrategy({
                 newUser = false;
             }
         });
-        User.findOrCreate({ thirdpartyauth_id: profile.id, name: profile.displayName }, function (err, user) {
+        User.findOrCreate({ thirdpartyauth_id: profile.id, name: profile.displayName , thirdparty_provider : profile.provider }, function (err, user) {
             return cb(err, user);
         });
     }
@@ -109,7 +110,7 @@ passport.use(new FacebookStrategy({
                 newUser = false;
             }
         });
-        User.findOrCreate({ thirdpartyauth_id: profile.id, name: profile.displayName }, function (err, user) {
+        User.findOrCreate({ thirdpartyauth_id: profile.id, name: profile.displayName ,thirdparty_provider : profile.provider }, function (err, user) {
             return cb(err, user);
         });
     }
@@ -204,7 +205,7 @@ app.get("/register", function (req, res) {
 });
 
 app.post("/register", function (req, res) {
-    User.register({ username: req.body.username, name: req.body.name, thirdpartyauth_id: null, country: req.body.country, langauge: req.body.langauge }, req.body.password, function (err, user) {
+    User.register({ username: req.body.username, name: req.body.name, thirdpartyauth_id: null,thirdparty_provider : null, country: req.body.country, langauge: req.body.langauge }, req.body.password, function (err, user) {
         if (err) {
             console.log(err)
             res.render("alerts/uaxerror")
