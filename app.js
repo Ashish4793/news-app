@@ -83,7 +83,6 @@ passport.use(new GoogleStrategy({
     callbackURL: process.env.GOOGLE_CALLBACK_URL
 },
     function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
         User.findOne({ username: profile.id }, function (err, user) {
             if (user === null) {
                 newUser = true;
@@ -103,7 +102,6 @@ passport.use(new FacebookStrategy({
     callbackURL: process.env.FACEBOOK_CALLBACK_URL
 },
     function (accessToken, refreshToken, profile, cb) {
-        console.log(profile);
         User.findOne({ username: profile.id }, function (err, user) {
             if (user === null) {
                 newUser = true;
