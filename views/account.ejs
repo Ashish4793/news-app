@@ -177,7 +177,16 @@
 
                     <div class="text-center mt-3">
                         <h5 class="mt-2 mb-0"><%= user.name %></h5>
-                        <p><%= user.username %></p>
+                        <% if (f === true) { %>
+                            <p><%= user.username %></p>
+                        <% } else { %>
+                            <% if (auth_provider === "facebook") { %>
+                                <p><img style="width: 30px; margin: 1rem;" src="https://cdn-icons-png.flaticon.com/512/2504/2504903.png" alt="facebook_logo">Signed in using Facebook</p>
+                            <% } else { %>
+                                <p><img style="width: 25px; margin: 1rem;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="google_logo">Signed in using Google</p>
+                            <% } %>
+                        <% } %>
+                        
                         <p>Langauge : <%= user.langauge %></p>
                         <p>Country : <%= user.country %></p>
 

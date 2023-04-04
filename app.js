@@ -220,7 +220,17 @@ app.post("/register", function (req, res) {
 
 app.get("/account", function (req, res) {
     if (req.isAuthenticated()) {
-        res.render("account", { user: req.user });
+        let f;
+        const auth_provider = req.user.thirdparty_provider;
+        let a = req.user.username;
+        let b = ".com";
+        let decision = a.includes((b));
+        if (decision === true){
+            f = true;
+        } else {
+            f = false;
+        }
+        res.render("account", { user: req.user , f : f , auth_provider : auth_provider});
     } else {
         res.redirect("/login")
     }
