@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
     name: { type: String, require: true },
     country: { type: String, require: true },
     langauge: { type: String, require: true },
-    password: String
+    password: String,
 });
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
@@ -416,6 +416,10 @@ app.post("/deleteaccount", function (req, res) {
     } else {
         res.redirect("/login")
     }
+});
+//404 route
+app.use((req, res, next) => {
+    res.status(404).render("404");
 });
 
 connectDB().then(() => {
