@@ -9,6 +9,7 @@ A basic news app built using Gnews API
 - Top Headlines
 - Particular Keyword (city name or a topic)
 - Category-Wise News
+- Multiple Country and Language Support
 - Bookmark a article to read later
 
 # Built With
