@@ -17,6 +17,7 @@ A basic news app built using Gnews API
 * HTML
 * CSS
 * BOOTSTRAP-5
+* EJS
 * JAVASCRIPT
 * NODEJS
 * EXPRESS
