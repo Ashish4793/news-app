@@ -419,7 +419,7 @@ app.use((req, res, next) => {
 
 connectDB().then(() => {
     console.log("newsGdb CONNECTED SUCCESFULLY");
-    app.listen(3000, () => {
+    app.listen(process.env.PORT || 3000, () => {
         console.log("newsG Server STARTED");
     })
 });
