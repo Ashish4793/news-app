@@ -4,6 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
 const apiKey = process.env.API_KEY;
+const fetch = require("node-fetch");
 const mongoose = require("mongoose");
 const findOrCreate = require("mongoose-findorcreate");
 const session = require("express-session");
